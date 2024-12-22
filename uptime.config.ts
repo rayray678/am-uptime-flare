@@ -1,3 +1,5 @@
+import fetch from 'node-fetch'; // 确保您已经安装了 node-fetch
+
 const pageConfig = {
   // Title for your status page
   title: "Ray的监控器",
@@ -14,8 +16,6 @@ const workerConfig = {
   // passwordProtection: 'username:password',
   // Define all your monitors here
   monitors: [
-    
-    // Example TCP Monitor
     {
       id: 'nezha',
       name: '哪吒探针',
@@ -41,49 +41,47 @@ const workerConfig = {
       timeNow,
       reason
     ) => {
-      // Telegram Configuration
-      const botToken = "7883310071:AAEJBj2FC43GIKkb6IvR600rC03wVFGSiAo"; // Replace with your Bot Token
-      const chatId = "7930266661"; // Replace with your Chat ID
-      const tgMessage = isUp
-        ? `✅ 服务器 ${monitor.name} 已恢复！\n时间: ${new Date(timeNow).toLocaleString()}`
-        : `❌ 服务器 ${monitor.name} 掉线！\n原因: ${reason}\n时间: ${new Date(
-            timeIncidentStart
-          ).toLocaleString()}`;
+      try {
+        // Telegram Configuration
+        const botToken = "7883310071:AAEJBj2FC43GIKkb6IvR600rC03wVFGSiAo";
+        const chatId = "7930266661"; 
+        const tgMessage = isUp
+          ? `✅ 服务器 ${monitor.name} 已恢复！\n时间: ${new Date(timeNow).toLocaleString()}`
+          : `❌ 服务器 ${monitor.name} 掉线！\n原因: ${reason}\n时间: ${new Date(timeIncidentStart).toLocaleString()}`;
 
-      const tgUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-      await fetch(tgUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: tgMessage,
-        }),
-      });
+        const tgUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+        await fetch(tgUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: tgMessage,
+          }),
+        });
 
-      // PushPlus Configuration
-      const pushPlusToken = "7f728b815761451191e3cecd824c8027"; // Replace with your PushPlus Token
-      const pushPlusTitle = isUp
-        ? `✅ 服务器恢复：${monitor.name}`
-        : `❌ 服务器掉线：${monitor.name}`;
-      const pushPlusContent = isUp
-        ? `服务器 ${monitor.name} 已恢复！\n时间: ${new Date(
-            timeNow
-          ).toLocaleString()}`
-        : `服务器 ${monitor.name} 掉线！\n原因: ${reason}\n时间: ${new Date(
-            timeIncidentStart
-          ).toLocaleString()}`;
+        // PushPlus Configuration
+        const pushPlusToken = "7f728b815761451191e3cecd824c8027"; 
+        const pushPlusTitle = isUp
+          ? `✅ 服务器恢复：${monitor.name}`
+          : `❌ 服务器掉线：${monitor.name}`;
+        const pushPlusContent = isUp
+          ? `服务器 ${monitor.name} 已恢复！\n时间: ${new Date(timeNow).toLocaleString()}`
+          : `服务器 ${monitor.name} 掉线！\n原因: ${reason}\n时间: ${new Date(timeIncidentStart).toLocaleString()}`;
 
-      const pushPlusUrl = "http://www.pushplus.plus/send";
-      await fetch(pushPlusUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token: pushPlusToken,
-          title: pushPlusTitle,
-          content: pushPlusContent,
-          template: "json",
-        }),
-      });
+        const pushPlusUrl = "http://www.pushplus.plus/send";
+        await fetch(pushPlusUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: pushPlusToken,
+            title: pushPlusTitle,
+            content: pushPlusContent,
+            template: "json",
+          }),
+        });
+      } catch (error) {
+        console.error("Error sending notifications:", error);
+      }
     },
   },
   callbacks: {
@@ -95,7 +93,7 @@ const workerConfig = {
       timeNow,
       reason
     ) => {
-      // This callback will be called when there's a status change for any monitor
+      // Callback logic when status changes (currently empty)
     },
     onIncident: async (
       env,
@@ -104,7 +102,7 @@ const workerConfig = {
       timeNow,
       reason
     ) => {
-      // This callback will be called EVERY 1 MINTUE if there's an on-going incident for any monitor
+      // Callback logic for ongoing incidents (currently empty)
     },
   },
 }
