@@ -1,12 +1,3 @@
-const fetch = require('node-fetch'); // 使用 CommonJS 语法
-
-const pageConfig = {
-  title: "Ray的监控器",
-  links: [
-    { link: 'https://nezha.rayray666.us.kg/', label: '哪吒面板', highlight: true },
-  ],
-};
-
 const workerConfig = {
   kvWriteCooldownMinutes: 3,
   monitors: [
@@ -27,7 +18,14 @@ const workerConfig = {
     },
   ],
   notification: {
-    onStatusChange: async (env, monitor, isUp, timeIncidentStart, timeNow, reason) => {
+    onStatusChange: async (
+      env: any,  // Here we're explicitly defining the type of 'env' as 'any'
+      monitor: any,
+      isUp: boolean,
+      timeIncidentStart: number,
+      timeNow: number,
+      reason: string
+    ) => {
       try {
         const botToken = "7883310071:AAEJBj2FC43GIKkb6IvR600rC03wVFGSiAo";
         const chatId = "7930266661"; 
