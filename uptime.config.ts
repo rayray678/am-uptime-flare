@@ -1,6 +1,6 @@
 const pageConfig = {
   // Title for your status page
-  title: "AM科技's Status Page",
+  title: "Ray的监控器",
   // Links shown at the header of your status page, could set `highlight` to `true`
   links: [
     { link: 'https://nezha.rayray666.us.kg/', label: '哪吒面板', highlight: true },
@@ -14,87 +14,97 @@ const workerConfig = {
   // passwordProtection: 'username:password',
   // Define all your monitors here
   monitors: [
-    // Example HTTP Monitor
-    {
-      // `id` should be unique, history will be kept if the `id` remains constant
-      id: 'am.809098.xyz',
-      // `name` is used at status page and callback message
-      name: '个人博客',
-      // `method` should be a valid HTTP Method
-      method: 'GET',
-      // `target` is a valid URL
-      target: 'https://am.809098.xyz',
-      // [OPTIONAL] `tooltip` is ONLY used at status page to show a tooltip
-      tooltip: 'This is a tooltip for this monitor',
-      // [OPTIONAL] `statusPageLink` is ONLY used for clickable link at status page
-      statusPageLink: 'https://am.809098.xyz',
-      // [OPTIONAL] `expectedCodes` is an array of acceptable HTTP response codes, if not specified, default to 2xx
-      // expectedCodes: [200],
-      // [OPTIONAL] `timeout` in millisecond, if not specified, default to 10000
-      timeout: 10000,
-      // [OPTIONAL] headers to be sent
-      // headers: {
-      //   'User-Agent': 'Uptimeflare',
-      //   Authorization: 'Bearer YOUR_TOKEN_HERE',
-      // },
-      // [OPTIONAL] body to be sent
-      // body: 'Hello, world!',
-      // [OPTIONAL] if specified, the response must contains the keyword to be considered as operational.
-      // responseKeyword: 'success',
-      // [OPTIONAL] if specified, the check will run in your specified region,
-      // refer to docs https://github.com/lyc8503/UptimeFlare/wiki/Geo-specific-checks-setup before setting this value
-      // checkLocationWorkerRoute: 'https://am.809098.xyz',
-    },
+    
     // Example TCP Monitor
     {
-      id: 'qinglong',
-      name: '青龙',
-      // `method` should be `TCP_PING` for tcp monitors
+      id: 'nezha',
+      name: '哪吒探针',
       method: 'GET',
-      // `target` should be `host:port` for tcp monitors
-      target: 'https://wddsrferf-qinlong1-2.hf.space/crontab',
+      target: 'https://nezha.rayray666.us.kg/',
+      tooltip: 'My production server monitor',
+      timeout: 10000,
+    }, {
+      id: 'qinglong',
+      name: '青龙面板',
+      method: 'GET',
+      target: 'https://wddsrferf-qinlong1-2.hf.space',
       tooltip: 'My production server monitor',
       timeout: 10000,
     },
   ],
   notification: {
-    // [Optional] apprise API server URL
-    // if not specified, no notification will be sent
-    appriseApiServer: "https://apprise.example.com/notify",
-    // [Optional] recipient URL for apprise, refer to https://github.com/caronc/apprise
-    // if not specified, no notification will be sent
-    recipientUrl: "tgram://bottoken/ChatID",
-    // [Optional] timezone used in notification messages, default to "Etc/GMT"
-    timeZone: "Asia/Shanghai",
-    // [Optional] grace period in minutes before sending a notification
-    // notification will be sent only if the monitor is down for N continuous checks after the initial failure
-    // if not specified, notification will be sent immediately
-    gracePeriod: 5,
+    onStatusChange: async (
+      env,
+      monitor,
+      isUp,
+      timeIncidentStart,
+      timeNow,
+      reason
+    ) => {
+      // Telegram Configuration
+      const botToken = "7883310071:AAEJBj2FC43GIKkb6IvR600rC03wVFGSiAo"; // Replace with your Bot Token
+      const chatId = "7930266661"; // Replace with your Chat ID
+      const tgMessage = isUp
+        ? `✅ 服务器 ${monitor.name} 已恢复！\n时间: ${new Date(timeNow).toLocaleString()}`
+        : `❌ 服务器 ${monitor.name} 掉线！\n原因: ${reason}\n时间: ${new Date(
+            timeIncidentStart
+          ).toLocaleString()}`;
+
+      const tgUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+      await fetch(tgUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: tgMessage,
+        }),
+      });
+
+      // PushPlus Configuration
+      const pushPlusToken = "7f728b815761451191e3cecd824c8027"; // Replace with your PushPlus Token
+      const pushPlusTitle = isUp
+        ? `✅ 服务器恢复：${monitor.name}`
+        : `❌ 服务器掉线：${monitor.name}`;
+      const pushPlusContent = isUp
+        ? `服务器 ${monitor.name} 已恢复！\n时间: ${new Date(
+            timeNow
+          ).toLocaleString()}`
+        : `服务器 ${monitor.name} 掉线！\n原因: ${reason}\n时间: ${new Date(
+            timeIncidentStart
+          ).toLocaleString()}`;
+
+      const pushPlusUrl = "http://www.pushplus.plus/send";
+      await fetch(pushPlusUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: pushPlusToken,
+          title: pushPlusTitle,
+          content: pushPlusContent,
+          template: "json",
+        }),
+      });
+    },
   },
   callbacks: {
     onStatusChange: async (
-      env: any,
-      monitor: any,
-      isUp: boolean,
-      timeIncidentStart: number,
-      timeNow: number,
-      reason: string
+      env,
+      monitor,
+      isUp,
+      timeIncidentStart,
+      timeNow,
+      reason
     ) => {
       // This callback will be called when there's a status change for any monitor
-      // Write any Typescript code here
-
-      // This will not follow the grace period settings and will be called immediately when the status changes
-      // You need to handle the grace period manually if you want to implement it
     },
     onIncident: async (
-      env: any,
-      monitor: any,
-      timeIncidentStart: number,
-      timeNow: number,
-      reason: string
+      env,
+      monitor,
+      timeIncidentStart,
+      timeNow,
+      reason
     ) => {
       // This callback will be called EVERY 1 MINTUE if there's an on-going incident for any monitor
-      // Write any Typescript code here
     },
   },
 }
