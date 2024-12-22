@@ -1,4 +1,4 @@
-import fetch from 'node-fetch'; // 确保您安装了兼容的 node-fetch 版本
+const fetch = require('node-fetch'); // 使用 CommonJS 语法
 
 const pageConfig = {
   title: "Ray的监控器",
