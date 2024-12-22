@@ -24,6 +24,7 @@ const workerConfig = {
       // target should be host:port for tcp monitors
       target: 'https://nezha.rayray666.us.kg/',
       tooltip: 'My production server monitor',
+      statusPageLink: 'https://nezha.rayray666.us.kg',
       timeout: 10000,
     }, {
       id: 'qinglong',
@@ -33,6 +34,7 @@ const workerConfig = {
       // target should be host:port for tcp monitors
       target: 'https://wddsrferf-qinlong1-2.hf.space/crontab',
       tooltip: 'My production server monitor',
+      statusPageLink: 'https://wddsrferf-qinlong1-2.hf.space/crontab',
       timeout: 10000,
     },
   ],
