@@ -43,9 +43,9 @@ const workerConfig = {
       // 对于 tcp 监控器，method 应该是 TCP_PING
       method: 'GET',
       // 对于 tcp 监控器，target 应该是 host:port
-      target: 'https://bpb.993474.xyz/',
+      target: 'https://bpb.993474.xyz',
       tooltip: '我的生产服务器监控器',
-      statusPageLink: 'https://bpb.993474.xyz/',
+      statusPageLink: 'https://bpb.993474.xyz',
       timeout: 10000,
     },
   ],
