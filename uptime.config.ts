@@ -37,7 +37,7 @@ const workerConfig = {
       statusPageLink: 'https://wddsrferf-qinlong1-2.hf.space/crontab',
       timeout: 10000,
     },
-     id: 'bpbg',
+     id: 'bpb',
       name: 'BPB',
       // method should be TCP_PING for tcp monitors
       method: 'GET',
